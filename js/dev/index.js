@@ -116,21 +116,30 @@ function dataMediaQueries(array, dataSetValue) {
     return { itemsArray, matchMedia };
   });
 }
+function updateShowMoreContentValues() {
+  document.querySelectorAll("[data-fls-showmore-content]").forEach((el) => {
+    if (window.matchMedia("(max-width: 480px)").matches) {
+      el.dataset.flsShowmoreContent = "330";
+    } else if (window.matchMedia("(max-width: 768px)").matches) {
+      el.dataset.flsShowmoreContent = "380";
+    } else {
+      el.dataset.flsShowmoreContent = "465";
+    }
+  });
+}
 function showMore() {
   const showMoreBlocks = document.querySelectorAll("[data-fls-showmore]");
   let showMoreBlocksRegular;
   let mdQueriesArray;
   if (showMoreBlocks.length) {
-    showMoreBlocksRegular = Array.from(showMoreBlocks).filter(function(item, index, self) {
-      return !item.dataset.flsShowmoreMedia;
-    });
-    showMoreBlocksRegular.length ? initItems(showMoreBlocksRegular) : null;
+    showMoreBlocksRegular = Array.from(showMoreBlocks).filter((item) => !item.dataset.flsShowmoreMedia);
+    if (showMoreBlocksRegular.length) initItems(showMoreBlocksRegular);
     document.addEventListener("click", showMoreActions);
     window.addEventListener("resize", showMoreActions);
     mdQueriesArray = dataMediaQueries(showMoreBlocks, "flsShowmoreMedia");
     if (mdQueriesArray && mdQueriesArray.length) {
       mdQueriesArray.forEach((mdQueriesItem) => {
-        mdQueriesItem.matchMedia.addEventListener("change", function() {
+        mdQueriesItem.matchMedia.addEventListener("change", () => {
           initItems(mdQueriesItem.itemsArray, mdQueriesItem.matchMedia);
         });
       });
@@ -142,17 +151,12 @@ function showMore() {
       initItems(mdQueriesItem.itemsArray, mdQueriesItem.matchMedia);
     });
   }
-  function initItems(showMoreBlocks2, matchMedia) {
-    showMoreBlocks2.forEach((showMoreBlock) => {
-      initItem(showMoreBlock, matchMedia);
-    });
+  function initItems(blocks, matchMedia) {
+    blocks.forEach((block) => initItem(matchMedia ? block.item : block, matchMedia));
   }
   function initItem(showMoreBlock, matchMedia = false) {
-    showMoreBlock = matchMedia ? showMoreBlock.item : showMoreBlock;
-    let showMoreContent = showMoreBlock.querySelectorAll("[data-fls-showmore-content]");
-    let showMoreButton = showMoreBlock.querySelectorAll("[data-fls-showmore-button]");
-    showMoreContent = Array.from(showMoreContent).filter((item) => item.closest("[data-fls-showmore]") === showMoreBlock)[0];
-    showMoreButton = Array.from(showMoreButton).filter((item) => item.closest("[data-fls-showmore]") === showMoreBlock)[0];
+    const showMoreContent = showMoreBlock.querySelector("[data-fls-showmore-content]");
+    const showMoreButton = showMoreBlock.querySelector("[data-fls-showmore-button]");
     const hiddenHeight = getHeight(showMoreBlock, showMoreContent);
     if (matchMedia.matches || !matchMedia) {
       if (hiddenHeight < getOriginalHeight(showMoreContent)) {
@@ -169,66 +173,70 @@ function showMore() {
   }
   function getHeight(showMoreBlock, showMoreContent) {
     let hiddenHeight = 0;
-    const showMoreType = showMoreBlock.dataset.flsShowmore ? showMoreBlock.dataset.flsShowmore : "size";
-    const rowGap = parseFloat(getComputedStyle(showMoreContent).rowGap) ? parseFloat(getComputedStyle(showMoreContent).rowGap) : 0;
-    if (showMoreType === "items") {
-      const showMoreTypeValue = showMoreContent.dataset.flsShowmoreContent ? showMoreContent.dataset.flsShowmoreContent : 3;
-      const showMoreItems = showMoreContent.children;
-      for (let index = 1; index < showMoreItems.length; index++) {
-        const showMoreItem = showMoreItems[index - 1];
-        const marginTop = parseFloat(getComputedStyle(showMoreItem).marginTop) ? parseFloat(getComputedStyle(showMoreItem).marginTop) : 0;
-        const marginBottom = parseFloat(getComputedStyle(showMoreItem).marginBottom) ? parseFloat(getComputedStyle(showMoreItem).marginBottom) : 0;
-        hiddenHeight += showMoreItem.offsetHeight + marginTop;
-        if (index == showMoreTypeValue) break;
-        hiddenHeight += marginBottom;
+    const type = showMoreBlock.dataset.flsShowmore || "size";
+    const rowGap = parseFloat(getComputedStyle(showMoreContent).rowGap) || 0;
+    if (type === "items") {
+      const limit = parseInt(showMoreContent.dataset.flsShowmoreContent) || 3;
+      const items = showMoreContent.children;
+      for (let i = 0; i < items.length && i < limit; i++) {
+        const item = items[i];
+        const style = getComputedStyle(item);
+        const marginTop = parseFloat(style.marginTop) || 0;
+        const marginBottom = parseFloat(style.marginBottom) || 0;
+        hiddenHeight += item.offsetHeight + marginTop + marginBottom;
       }
-      rowGap ? hiddenHeight += (showMoreTypeValue - 1) * rowGap : null;
+      hiddenHeight += (limit - 1) * rowGap;
     } else {
-      const showMoreTypeValue = showMoreContent.dataset.flsShowmoreContent ? showMoreContent.dataset.flsShowmoreContent : 150;
-      hiddenHeight = showMoreTypeValue;
+      hiddenHeight = parseInt(showMoreContent.dataset.flsShowmoreContent) || 150;
     }
     return hiddenHeight;
   }
   function getOriginalHeight(showMoreContent) {
     let parentHidden;
-    let hiddenHeight = showMoreContent.offsetHeight;
+    const currentHeight = showMoreContent.offsetHeight;
     showMoreContent.style.removeProperty("height");
-    if (showMoreContent.closest(`[hidden]`)) {
-      parentHidden = showMoreContent.closest(`[hidden]`);
+    if (showMoreContent.closest("[hidden]")) {
+      parentHidden = showMoreContent.closest("[hidden]");
       parentHidden.hidden = false;
     }
-    let originalHeight = showMoreContent.offsetHeight;
-    parentHidden ? parentHidden.hidden = true : null;
-    showMoreContent.style.height = `${hiddenHeight}px`;
-    return originalHeight;
+    const fullHeight = showMoreContent.offsetHeight;
+    if (parentHidden) parentHidden.hidden = true;
+    showMoreContent.style.height = `${currentHeight}px`;
+    return fullHeight;
   }
   function showMoreActions(e) {
-    const targetEvent = e.target;
-    const targetType = e.type;
-    if (targetType === "click") {
-      const showMoreButton = targetEvent.closest("[data-fls-showmore-button]");
-      if (showMoreButton) {
-        const showMoreBlock = showMoreButton.closest("[data-fls-showmore]");
-        const showMoreContent = showMoreBlock.querySelector("[data-fls-showmore-content]");
-        const showMoreSpeed = showMoreBlock.dataset.flsShowmoreButton ? showMoreBlock.dataset.flsShowmoreButton : "500";
-        const hiddenHeight = getHeight(showMoreBlock, showMoreContent);
-        if (!showMoreContent.classList.contains("--slide")) {
-          if (showMoreBlock.classList.contains("--showmore-active")) {
-            slideUp(showMoreContent, showMoreSpeed, hiddenHeight);
-            showMoreBlock.classList.remove("--showmore-active");
+    const target = e.target;
+    const eventType = e.type;
+    if (eventType === "click") {
+      const btn = target.closest("[data-fls-showmore-button]");
+      if (btn) {
+        const block = btn.closest("[data-fls-showmore]");
+        const content = block.querySelector("[data-fls-showmore-content]");
+        const speed = block.dataset.flsShowmoreButton || 500;
+        const height = getHeight(block, content);
+        if (!content.classList.contains("--slide")) {
+          if (block.classList.contains("--showmore-active")) {
+            slideUp(content, speed, height);
+            block.classList.remove("--showmore-active");
           } else {
-            slideDown(showMoreContent, showMoreSpeed, hiddenHeight);
-            showMoreBlock.classList.add("--showmore-active");
+            slideDown(content, speed, height);
+            block.classList.add("--showmore-active");
           }
         }
       }
-    } else if (targetType === "resize") {
-      showMoreBlocksRegular && showMoreBlocksRegular.length ? initItems(showMoreBlocksRegular) : null;
-      mdQueriesArray && mdQueriesArray.length ? initItemsMedia(mdQueriesArray) : null;
+    } else if (eventType === "resize") {
+      if (showMoreBlocksRegular == null ? void 0 : showMoreBlocksRegular.length) initItems(showMoreBlocksRegular);
+      if (mdQueriesArray == null ? void 0 : mdQueriesArray.length) initItemsMedia(mdQueriesArray);
     }
   }
 }
-window.addEventListener("load", showMore);
+updateShowMoreContentValues();
+window.addEventListener("load", () => {
+  showMore();
+});
+window.addEventListener("resize", () => {
+  updateShowMoreContentValues();
+});
 const marquee = () => {
   const $marqueeArray = document.querySelectorAll("[data-fls-marquee]");
   const ATTR_NAMES = {
