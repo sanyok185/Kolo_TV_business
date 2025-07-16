@@ -119,7 +119,7 @@ function dataMediaQueries(array, dataSetValue) {
 function updateShowMoreContentValues() {
   document.querySelectorAll("[data-fls-showmore-content]").forEach((el) => {
     if (window.matchMedia("(max-width: 480px)").matches) {
-      el.dataset.flsShowmoreContent = "330";
+      el.dataset.flsShowmoreContent = "320";
     } else if (window.matchMedia("(max-width: 768px)").matches) {
       el.dataset.flsShowmoreContent = "380";
     } else {
