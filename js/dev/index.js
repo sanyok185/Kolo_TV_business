@@ -111,9 +111,9 @@ function dataMediaQueries(array, dataSetValue) {
   const uniqueQueries = [...new Set(breakpointsArray)];
   return uniqueQueries.map((query) => {
     const [mediaQuery, mediaBreakpoint, mediaType] = query.split(",");
-    const matchMedia = window.matchMedia(mediaQuery);
+    const matchMedia2 = window.matchMedia(mediaQuery);
     const itemsArray = media.filter((item) => item.value === mediaBreakpoint && item.type === mediaType);
-    return { itemsArray, matchMedia };
+    return { itemsArray, matchMedia: matchMedia2 };
   });
 }
 function updateShowMoreContentValues() {
@@ -151,14 +151,14 @@ function showMore() {
       initItems(mdQueriesItem.itemsArray, mdQueriesItem.matchMedia);
     });
   }
-  function initItems(blocks, matchMedia) {
-    blocks.forEach((block) => initItem(matchMedia ? block.item : block, matchMedia));
+  function initItems(blocks, matchMedia2) {
+    blocks.forEach((block) => initItem(matchMedia2 ? block.item : block, matchMedia2));
   }
-  function initItem(showMoreBlock, matchMedia = false) {
+  function initItem(showMoreBlock, matchMedia2 = false) {
     const showMoreContent = showMoreBlock.querySelector("[data-fls-showmore-content]");
     const showMoreButton = showMoreBlock.querySelector("[data-fls-showmore-button]");
     const hiddenHeight = getHeight(showMoreBlock, showMoreContent);
-    if (matchMedia.matches || !matchMedia) {
+    if (matchMedia2.matches || !matchMedia2) {
       if (hiddenHeight < getOriginalHeight(showMoreContent)) {
         slideUp(showMoreContent, 0, showMoreBlock.classList.contains("--showmore-active") ? getOriginalHeight(showMoreContent) : hiddenHeight);
         showMoreButton.hidden = false;
@@ -435,26 +435,8 @@ const marquee = () => {
   });
 };
 marquee();
-document.querySelectorAll(".item-who").forEach((item) => {
-  item.addEventListener("click", (e) => {
-    const target = e.target;
-    if (target.closest(".block__more")) return;
-    const isAlreadyFlipped = item.classList.contains("flipped");
-    document.querySelectorAll(".item-who.flipped").forEach((flippedItem) => {
-      flippedItem.classList.remove("flipped");
-      const showMoreBlock = flippedItem.querySelector("[data-fls-showmore].--showmore-active");
-      const showMoreContent = showMoreBlock == null ? void 0 : showMoreBlock.querySelector("[data-fls-showmore-content]");
-      if (showMoreBlock && showMoreContent && !showMoreContent.classList.contains("--slide")) {
-        const hiddenHeight = getShowmoreHiddenHeight(showMoreBlock, showMoreContent);
-        slideUpSimple(showMoreContent, 500, hiddenHeight);
-        showMoreBlock.classList.remove("--showmore-active");
-      }
-    });
-    if (!isAlreadyFlipped) {
-      item.classList.add("flipped");
-    }
-  });
-});
+const isTouch = matchMedia("(hover: none)").matches;
+const cards = document.querySelectorAll(".item-who");
 function slideUpSimple(target, duration = 500, toHeight = 0) {
   target.style.transitionProperty = "height";
   target.style.transitionDuration = duration + "ms";
@@ -489,4 +471,53 @@ function getShowmoreHiddenHeight(showMoreBlock, showMoreContent) {
   } else {
     return parseInt(showMoreContent.dataset.flsShowmoreContent) || 150;
   }
+}
+function closeAllCards(exceptCard = null) {
+  cards.forEach((flippedItem) => {
+    if (flippedItem !== exceptCard) {
+      flippedItem.classList.remove("flipped");
+      const showMoreBlock = flippedItem.querySelector("[data-fls-showmore].--showmore-active");
+      const showMoreContent = showMoreBlock == null ? void 0 : showMoreBlock.querySelector("[data-fls-showmore-content]");
+      if (showMoreBlock && showMoreContent && !showMoreContent.classList.contains("--slide")) {
+        const hiddenHeight = getShowmoreHiddenHeight(showMoreBlock, showMoreContent);
+        slideUpSimple(showMoreContent, 500, hiddenHeight);
+        showMoreBlock.classList.remove("--showmore-active");
+      }
+    }
+  });
+}
+if (!isTouch) {
+  cards.forEach((card) => {
+    let hoverTimeout;
+    card.addEventListener("mouseenter", () => {
+      clearTimeout(hoverTimeout);
+      closeAllCards(card);
+      card.classList.add("flipped");
+    });
+    card.addEventListener("mouseleave", () => {
+      clearTimeout(hoverTimeout);
+      hoverTimeout = setTimeout(() => {
+        card.classList.remove("flipped");
+        const showMoreBlock = card.querySelector("[data-fls-showmore]");
+        const showMoreContent = showMoreBlock == null ? void 0 : showMoreBlock.querySelector("[data-fls-showmore-content]");
+        if (showMoreBlock && showMoreContent) {
+          const hiddenHeight = getShowmoreHiddenHeight(showMoreBlock, showMoreContent);
+          slideUpSimple(showMoreContent, 500, hiddenHeight);
+          showMoreBlock.classList.remove("--showmore-active");
+        }
+      }, 50);
+    });
+  });
+} else {
+  cards.forEach((card) => {
+    card.addEventListener("click", (e) => {
+      const target = e.target;
+      if (target.closest(".block__more")) return;
+      const isAlreadyFlipped = card.classList.contains("flipped");
+      closeAllCards(card);
+      if (!isAlreadyFlipped) {
+        card.classList.add("flipped");
+      }
+    });
+  });
 }
