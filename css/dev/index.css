@@ -568,6 +568,7 @@ body {
   overflow: hidden;
 }
 .item-who__front {
+  cursor: pointer;
   position: absolute;
   z-index: 2;
   background-color: #0d1432;
@@ -618,12 +619,10 @@ body {
   fill: #fff;
 }
 .item-who__back {
+  cursor: default;
   background-color: #10163b;
   z-index: 1;
   color: #fff;
-}
-.item-who__back.--showmore-active {
-  cursor: default;
 }
 .item-who__title {
   position: relative;
@@ -1003,6 +1002,18 @@ body {
   /* .tatiffs__title */
   /* .tatiffs__caption */
 }
+.tatiffs__title {
+  text-align: center;
+}
+.tatiffs__caption {
+  text-align: center;
+}
+.tatiffs__caption b {
+  color: #0f80d2;
+  font-size: 1.25rem;
+  font-weight: 500;
+}
+
 .tariffs {
   /* .tariffs__plans */
   /* .tariffs__plan */
@@ -1010,11 +1021,121 @@ body {
   /* .tariffs__services */
   /* .tariffs__service */
 }
+.tariffs__plans {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(18.75rem, 1fr));
+}
+.tariffs__subtitle {
+  text-align: center;
+}
+.tariffs__services {
+  display: flex;
+  gap: 1.25rem;
+  justify-content: space-around;
+}
+.tariffs__service {
+  flex: 0 0 24.5%;
+  flex-shrink: 0;
+  display: flex;
+  gap: 0.5rem;
+  width: 100%;
+  padding: 1.25rem 2rem;
+  justify-content: center;
+  align-items: center;
+  border-radius: 6.25rem;
+  border: 0.0625rem solid #d9dbe9;
+  color: #0d1432;
+  text-align: center;
+  font-size: 1rem;
+  font-weight: 700;
+  line-height: 125%;
+  letter-spacing: 0.04rem;
+  transition: all 0.4s;
+}
+.tariffs__service:nth-child(2) {
+  background-color: #0f80d2;
+  color: #fff;
+  border: 0.0625rem solid #0f80d2;
+  gap: 0.5rem;
+}
+
 .plan {
+  padding: 2rem;
+  border-radius: 2rem;
+  transition: box-shadow 0.35s ease;
+  cursor: pointer;
   /* .plan__speed */
   /* .plan__price */
   /* .plan__caption */
   /* .plan__button */
+}
+.plan:hover {
+  box-shadow: 0 0 1.25rem rgba(0, 0, 0, 0.1);
+}
+.plan:nth-child(1) {
+  border: 0.0625rem solid #f7c334;
+}
+.plan:nth-child(1):hover {
+  box-shadow: 0 0 1.25rem rgba(247, 195, 52, 0.4);
+}
+.plan:nth-child(2) {
+  border: 0.0625rem solid #6dc389;
+}
+.plan:nth-child(2) .plan__button {
+  background-color: #0f80d2;
+  color: #fff;
+  border: 0.0625rem solid #0f80d2;
+  gap: 0.5rem;
+}
+.plan:nth-child(2):hover {
+  box-shadow: 0 0 1.25rem rgba(13, 170, 103, 0.4);
+}
+.plan:nth-child(3) {
+  border: 0.0625rem solid #e83a3e;
+}
+.plan:nth-child(3):hover {
+  box-shadow: 0 0 1.25rem rgba(232, 58, 62, 0.4);
+}
+.plan__speed {
+  font-weight: 500;
+  line-height: 135%; /* 2.025rem */
+  margin-bottom: 2rem;
+}
+.plan__price {
+  gap: 0.5rem;
+  display: flex;
+  align-items: center;
+  color: #a0a3bd;
+  font-weight: 500;
+  line-height: 115%; /* 1.725rem */
+}
+.plan__price b {
+  color: #0d1432;
+  font-family: "HelveticaNeue", sans-serif;
+  font-weight: 500;
+  line-height: 100%;
+}
+.plan__caption {
+  color: #514f6e;
+  font-weight: 500;
+  line-height: 115%; /* 1.29375rem */
+  margin-bottom: 2.25rem;
+}
+.plan__button {
+  display: flex;
+  width: 100%;
+  padding: 1.25rem 2rem;
+  justify-content: center;
+  align-items: center;
+  border-radius: 6.25rem;
+  border: 0.0625rem solid #d9dbe9;
+  color: #0d1432;
+  text-align: center;
+  font-size: 1rem;
+  font-weight: 700;
+  line-height: 125%;
+  letter-spacing: 0.04rem;
+  transition: all 0.4s;
 }
 @media (max-width: 87em){
   .hero__images {
@@ -1092,6 +1213,12 @@ body {
     top: 0;
     left: 0;
   }
+  .tariffs__services {
+    flex-wrap: wrap;
+  }
+  .tariffs__service {
+    flex: 0 1 44%;
+  }
 }
 @media (max-width: 47.9375em){
   .hero__image {
@@ -1130,6 +1257,9 @@ body {
   .clients__slide {
     flex-direction: column;
     row-gap: 0.875rem;
+  }
+  .tariffs__service {
+    flex: 0 1 100%;
   }
 }
 @media (max-width: 24.5625em){
@@ -1211,6 +1341,27 @@ body {
   .tatiffs {
     padding-bottom: 2.5rem;
   }
+  .tatiffs__content {
+    margin-bottom: 2.875rem;
+  }
+  .tatiffs__title {
+    margin-bottom: 1.25rem;
+  }
+  .tariffs__plans {
+    margin-bottom: 2.5rem;
+  }
+  .tariffs__subtitle {
+    margin-bottom: 2rem;
+  }
+  .plan__speed {
+    font-size: 1.25rem;
+  }
+  .plan__price {
+    font-size: 1rem;
+  }
+  .plan__price {
+    margin-bottom: 1.25rem;
+  }
 }
 @media (max-width: 24.375em){
   .hero__button {
@@ -1257,6 +1408,15 @@ body {
   .clients__items {
     gap: 1.25rem;
   }
+  .tariffs__plans {
+    gap: 1rem;
+  }
+  .plan__price b {
+    font-size: 2.5rem;
+  }
+  .plan__caption {
+    font-size: 1rem;
+  }
 }
 @media (min-width: 20em) and (max-width: 87em){
   .hero__logo {
@@ -1297,6 +1457,15 @@ body {
   }
   .clients__items {
     gap: clamp( 1.25rem , 0.6902985074625rem  +  2.7985074627vw , 3.125rem );
+  }
+  .tariffs__plans {
+    gap: clamp( 1rem , 0.73880597015rem  +  1.3059701493vw , 1.875rem );
+  }
+  .plan__price b {
+    font-size: clamp( 2.5rem , 2.12686567164375rem  +  1.8656716418vw , 3.75rem );
+  }
+  .plan__caption {
+    font-size: clamp( 1rem , 0.9626865671625rem  +  0.1865671642vw , 1.125rem );
   }
 }
 @media (min-width: 24.5625em) and (max-width: 87em){
@@ -1377,6 +1546,27 @@ body {
   }
   .tatiffs {
     padding-bottom: clamp( 2.5rem , 0.50844594594375rem  +  8.1081081081vw , 7.5625rem );
+  }
+  .tatiffs__content {
+    margin-bottom: clamp( 2.875rem , 2.0390390390375rem  +  3.4034034034vw , 5rem );
+  }
+  .tatiffs__title {
+    margin-bottom: clamp( 1.25rem , 0.95495495495625rem  +  1.2012012012vw , 2rem );
+  }
+  .tariffs__plans {
+    margin-bottom: clamp( 2.5rem , 1.51651651651875rem  +  4.004004004vw , 5rem );
+  }
+  .tariffs__subtitle {
+    margin-bottom: clamp( 2rem , 1.1148648648625rem  +  3.6036036036vw , 4.25rem );
+  }
+  .plan__speed {
+    font-size: clamp( 1.25rem , 1.15165165165rem  +  0.4004004004vw , 1.5rem );
+  }
+  .plan__price {
+    font-size: clamp( 1rem , 0.80330330330625rem  +  0.8008008008vw , 1.5rem );
+  }
+  .plan__price {
+    margin-bottom: clamp( 1.25rem , 1.05330330330625rem  +  0.8008008008vw , 1.75rem );
   }
 }
 @media (min-width: 24.5625em) and (max-width: 62em){
@@ -1582,6 +1772,36 @@ body {
   .tatiffs {
     padding-bottom: 7.5625rem;
   }
+  .tatiffs__content {
+    margin-bottom: 5rem;
+  }
+  .tatiffs__title {
+    margin-bottom: 2rem;
+  }
+  .tariffs__plans {
+    gap: 1.875rem;
+  }
+  .tariffs__plans {
+    margin-bottom: 5rem;
+  }
+  .tariffs__subtitle {
+    margin-bottom: 4.25rem;
+  }
+  .plan__speed {
+    font-size: 1.5rem;
+  }
+  .plan__price {
+    font-size: 1.5rem;
+  }
+  .plan__price {
+    margin-bottom: 1.75rem;
+  }
+  .plan__price b {
+    font-size: 3.75rem;
+  }
+  .plan__caption {
+    font-size: 1.125rem;
+  }
 }
 @media (min-width: 87.0625em){
   .swiper-button-prev,
@@ -1607,6 +1827,24 @@ body {
   }
   .block__more:hover {
     text-decoration: none;
+  }
+  .tariffs__service:nth-child(2):hover {
+    border: 0.0625rem solid #0D1432;
+    background-color: #0D1432;
+  }
+  .tariffs__service:hover {
+    background: #0f80d2;
+    color: #fff;
+    border: 0.0625rem solid #0f80d2;
+  }
+  .plan:nth-child(2) .plan__button:hover {
+    border: 0.0625rem solid #0D1432;
+    background-color: #0D1432;
+  }
+  .plan__button:hover {
+    background: #0f80d2;
+    color: #fff;
+    border: 0.0625rem solid #0f80d2;
   }
 }
 @media (hover: hover) and (pointer: fine){
