@@ -539,7 +539,6 @@ body {
 }
 .item-who__back {
   background-color: #10163b;
-  transform: rotateY(180deg);
   z-index: 1;
   color: #fff;
 }
@@ -640,7 +639,7 @@ body {
 .item-who.flipped .item-who__front {
   opacity: 0;
   pointer-events: none;
-  transform: translateY(-0.3125rem);
+  transform: translateY(-0.125rem);
 }
 .item-who.flipped .item-who__back {
   opacity: 1;
@@ -656,7 +655,7 @@ body {
 }
 .item-who__back {
   opacity: 0;
-  transform: translateY(0.3125rem);
+  transform: translateY(0.125rem);
   pointer-events: none;
 }
 @media (max-width: 87em) {
@@ -682,9 +681,6 @@ body {
   }
   .who__items {
     flex-wrap: wrap;
-  }
-  .item-who__back {
-    transform: rotateX(180deg);
   }
 }
 @media (max-width: 47.99875em) {
