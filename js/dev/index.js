@@ -5503,11 +5503,15 @@ function dataMediaQueries(array, dataSetValue) {
 function updateShowMoreContentValues() {
   document.querySelectorAll("[data-fls-showmore-content]").forEach((el) => {
     if (window.matchMedia("(max-width: 480px)").matches) {
-      el.dataset.flsShowmoreContent = "320";
+      el.dataset.flsShowmoreContent = "300";
     } else if (window.matchMedia("(max-width: 768px)").matches) {
+      el.dataset.flsShowmoreContent = "300";
+    } else if (window.matchMedia("(max-width: 992px)").matches) {
+      el.dataset.flsShowmoreContent = "320";
+    } else if (window.matchMedia("(max-width: 1150px)").matches) {
       el.dataset.flsShowmoreContent = "380";
     } else {
-      el.dataset.flsShowmoreContent = "465";
+      el.dataset.flsShowmoreContent = "420";
     }
   });
 }
@@ -6329,6 +6333,10 @@ const isTouchDevice = "ontouchstart" in window || navigator.maxTouchPoints > 0;
 if (isTouchDevice) {
   document.querySelectorAll(".work__item").forEach((item) => {
     item.addEventListener("click", () => {
+      const active = document.querySelector(".work__item.flipped");
+      if (active && active !== item) {
+        active.classList.remove("flipped");
+      }
       item.classList.toggle("flipped");
     });
   });
