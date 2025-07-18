@@ -5503,7 +5503,7 @@ function dataMediaQueries(array, dataSetValue) {
 function updateShowMoreContentValues() {
   document.querySelectorAll("[data-fls-showmore-content]").forEach((el) => {
     if (window.matchMedia("(max-width: 480px)").matches) {
-      el.dataset.flsShowmoreContent = "300";
+      el.dataset.flsShowmoreContent = "320";
     } else if (window.matchMedia("(max-width: 768px)").matches) {
       el.dataset.flsShowmoreContent = "300";
     } else if (window.matchMedia("(max-width: 992px)").matches) {
