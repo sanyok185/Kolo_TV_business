@@ -348,6 +348,9 @@ function animateCSSModeScroll(_ref) {
   };
   animate();
 }
+function getSlideTransformEl(slideEl) {
+  return slideEl.querySelector(".swiper-slide-transform") || slideEl.shadowRoot && slideEl.shadowRoot.querySelector(".swiper-slide-transform") || slideEl;
+}
 function elementChildren(element, selector) {
   if (selector === void 0) {
     selector = "";
@@ -449,6 +452,16 @@ function elementParents(el, selector) {
     parent = parent.parentElement;
   }
   return parents;
+}
+function elementTransitionEnd(el, callback) {
+  function fireCallBack(e) {
+    if (e.target !== el) return;
+    callback.call(el, e);
+    el.removeEventListener("transitionend", fireCallBack);
+  }
+  if (callback) {
+    el.addEventListener("transitionend", fireCallBack);
+  }
 }
 function elementOuterSize(el, size, includeMargins) {
   const window2 = getWindow();
@@ -5141,19 +5154,169 @@ function Autoplay(_ref) {
     resume
   });
 }
+function effectInit(params) {
+  const {
+    effect,
+    swiper,
+    on,
+    setTranslate: setTranslate2,
+    setTransition: setTransition2,
+    overwriteParams,
+    perspective,
+    recreateShadows,
+    getEffectParams
+  } = params;
+  on("beforeInit", () => {
+    if (swiper.params.effect !== effect) return;
+    swiper.classNames.push(`${swiper.params.containerModifierClass}${effect}`);
+    if (perspective && perspective()) {
+      swiper.classNames.push(`${swiper.params.containerModifierClass}3d`);
+    }
+    const overwriteParamsResult = overwriteParams ? overwriteParams() : {};
+    Object.assign(swiper.params, overwriteParamsResult);
+    Object.assign(swiper.originalParams, overwriteParamsResult);
+  });
+  on("setTranslate _virtualUpdated", () => {
+    if (swiper.params.effect !== effect) return;
+    setTranslate2();
+  });
+  on("setTransition", (_s, duration) => {
+    if (swiper.params.effect !== effect) return;
+    setTransition2(duration);
+  });
+  on("transitionEnd", () => {
+    if (swiper.params.effect !== effect) return;
+    if (recreateShadows) {
+      if (!getEffectParams || !getEffectParams().slideShadows) return;
+      swiper.slides.forEach((slideEl) => {
+        slideEl.querySelectorAll(".swiper-slide-shadow-top, .swiper-slide-shadow-right, .swiper-slide-shadow-bottom, .swiper-slide-shadow-left").forEach((shadowEl) => shadowEl.remove());
+      });
+      recreateShadows();
+    }
+  });
+  let requireUpdateOnVirtual;
+  on("virtualUpdate", () => {
+    if (swiper.params.effect !== effect) return;
+    if (!swiper.slides.length) {
+      requireUpdateOnVirtual = true;
+    }
+    requestAnimationFrame(() => {
+      if (requireUpdateOnVirtual && swiper.slides && swiper.slides.length) {
+        setTranslate2();
+        requireUpdateOnVirtual = false;
+      }
+    });
+  });
+}
+function effectTarget(effectParams, slideEl) {
+  const transformEl = getSlideTransformEl(slideEl);
+  if (transformEl !== slideEl) {
+    transformEl.style.backfaceVisibility = "hidden";
+    transformEl.style["-webkit-backface-visibility"] = "hidden";
+  }
+  return transformEl;
+}
+function effectVirtualTransitionEnd(_ref) {
+  let {
+    swiper,
+    duration,
+    transformElements
+  } = _ref;
+  const {
+    activeIndex
+  } = swiper;
+  if (swiper.params.virtualTranslate && duration !== 0) {
+    let eventTriggered = false;
+    let transitionEndTarget;
+    {
+      transitionEndTarget = transformElements;
+    }
+    transitionEndTarget.forEach((el) => {
+      elementTransitionEnd(el, () => {
+        if (eventTriggered) return;
+        if (!swiper || swiper.destroyed) return;
+        eventTriggered = true;
+        swiper.animating = false;
+        const evt = new window.CustomEvent("transitionend", {
+          bubbles: true,
+          cancelable: true
+        });
+        swiper.wrapperEl.dispatchEvent(evt);
+      });
+    });
+  }
+}
+function EffectFade(_ref) {
+  let {
+    swiper,
+    extendParams,
+    on
+  } = _ref;
+  extendParams({
+    fadeEffect: {
+      crossFade: false
+    }
+  });
+  const setTranslate2 = () => {
+    const {
+      slides
+    } = swiper;
+    const params = swiper.params.fadeEffect;
+    for (let i = 0; i < slides.length; i += 1) {
+      const slideEl = swiper.slides[i];
+      const offset = slideEl.swiperSlideOffset;
+      let tx = -offset;
+      if (!swiper.params.virtualTranslate) tx -= swiper.translate;
+      let ty = 0;
+      if (!swiper.isHorizontal()) {
+        ty = tx;
+        tx = 0;
+      }
+      const slideOpacity = swiper.params.fadeEffect.crossFade ? Math.max(1 - Math.abs(slideEl.progress), 0) : 1 + Math.min(Math.max(slideEl.progress, -1), 0);
+      const targetEl = effectTarget(params, slideEl);
+      targetEl.style.opacity = slideOpacity;
+      targetEl.style.transform = `translate3d(${tx}px, ${ty}px, 0px)`;
+    }
+  };
+  const setTransition2 = (duration) => {
+    const transformElements = swiper.slides.map((slideEl) => getSlideTransformEl(slideEl));
+    transformElements.forEach((el) => {
+      el.style.transitionDuration = `${duration}ms`;
+    });
+    effectVirtualTransitionEnd({
+      swiper,
+      duration,
+      transformElements
+    });
+  };
+  effectInit({
+    effect: "fade",
+    swiper,
+    on,
+    setTranslate: setTranslate2,
+    setTransition: setTransition2,
+    overwriteParams: () => ({
+      slidesPerView: 1,
+      slidesPerGroup: 1,
+      watchSlidesProgress: true,
+      spaceBetween: 0,
+      virtualTranslate: !swiper.params.cssMode
+    })
+  });
+}
 function initSliders() {
   if (document.querySelector(".clients__slider")) {
     new Swiper(".clients__slider", {
       // <- Вказуємо склас потрібного слайдера
       // Підключаємо модулі слайдера
       // для конкретного випадку
-      modules: [Navigation, Pagination, Autoplay],
+      modules: [Navigation, Pagination, Autoplay, EffectFade],
       observer: true,
       observeParents: true,
       slidesPerView: 1,
       spaceBetween: 0,
-      autoHeight: true,
-      speed: 1500,
+      // autoHeight: true,
+      speed: 1150,
       direction: "horizontal",
       //touchRatio: 0,
       //simulateTouch: false,
@@ -5161,9 +5324,12 @@ function initSliders() {
       //preloadImages: false,
       //lazy: true,
       // Ефекти
-      // effect: 'fade',
+      effect: "fade",
+      fadeEffect: {
+        crossFade: true
+      },
       autoplay: {
-        delay: 2e3,
+        delay: 2500,
         disableOnInteraction: false
       },
       // Пагінація
