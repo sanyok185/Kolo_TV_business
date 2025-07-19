@@ -1786,7 +1786,7 @@ body::after {
     margin-bottom: 1.25rem;
   }
   .hero__image {
-    height: 11.875rem;
+    height: 12.5rem;
   }
   .why {
     padding-top: 2.5rem;
@@ -2026,7 +2026,7 @@ body::after {
     margin-bottom: clamp( 1.25rem , 1.0730599214125rem  +  0.7203667322vw , 1.9375rem );
   }
   .hero__image {
-    height: clamp( 11.875rem , 7.58018172888125rem  +  17.4852652259vw , 28.5625rem );
+    height: clamp( 12.5rem , 8.366036345775rem  +  16.8303863785vw , 28.5625rem );
   }
   .why {
     padding-top: clamp( 2.5rem , 0.0871807465625rem  +  9.8231827112vw , 11.875rem );
