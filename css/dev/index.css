@@ -451,8 +451,8 @@ button:focus, button:active {
   max-height: 100%;
   height: 100%;
   display: flex;
-  gap: 1.125rem;
   padding-left: 2.625rem;
+  column-gap: 1.125rem;
 }
 .hero__line {
   display: flex;
@@ -460,6 +460,9 @@ button:focus, button:active {
   overflow: hidden;
   max-height: 100vh;
   background: none;
+}
+.hero__line--mobile {
+  padding-bottom: 2.5rem;
 }
 .hero__image {
   border-radius: 1rem;
@@ -1622,7 +1625,7 @@ body::after {
     align-items: center;
     text-align: center;
     padding-top: 8.1875rem;
-    padding-bottom: 7.9375rem;
+    padding-bottom: 3.8125rem;
   }
   .hero__bg {
     display: none;
@@ -1631,8 +1634,11 @@ body::after {
     padding-left: 0;
     margin: 0 -1rem;
   }
-  .hero__line {
+  .hero__line--pc {
     display: none;
+  }
+  .hero__image {
+    border-radius: 0.625rem;
   }
   .hero__image.desktop {
     display: none;
@@ -1676,11 +1682,6 @@ body::after {
   }
   .request__form {
     flex-direction: column;
-  }
-}
-@media (max-width: 47.9375em){
-  .hero__image {
-    height: 18.9375rem;
   }
 }
 @media (max-width: 37.5em){
@@ -1783,6 +1784,9 @@ body::after {
   }
   .hero__title {
     margin-bottom: 1.25rem;
+  }
+  .hero__image {
+    height: 11.875rem;
   }
   .why {
     padding-top: 2.5rem;
@@ -1911,7 +1915,7 @@ body::after {
 @media (max-width: 24.375em){
   .hero__content {
     padding-top: 5.6875rem;
-    padding-bottom: 5.6875rem;
+    padding-bottom: 3.1875rem;
   }
   .hero__button {
     min-width: 100%;
@@ -2020,6 +2024,9 @@ body::after {
   }
   .hero__title {
     margin-bottom: clamp( 1.25rem , 1.0730599214125rem  +  0.7203667322vw , 1.9375rem );
+  }
+  .hero__image {
+    height: clamp( 11.875rem , 7.58018172888125rem  +  17.4852652259vw , 28.5625rem );
   }
   .why {
     padding-top: clamp( 2.5rem , 0.0871807465625rem  +  9.8231827112vw , 11.875rem );
@@ -2165,11 +2172,6 @@ body::after {
     width: clamp( 9.125rem , 1.097972972975rem  +  26.7567567568vw , 15.3125rem );
   }
 }
-@media (min-width: 47.9375em) and (max-width: 120em){
-  .hero__image {
-    height: clamp( 18.9375rem , 12.5347463139625rem  +  13.356461405vw , 28.5625rem );
-  }
-}
 @media (min-width: 47.99875em){
   .hero {
     min-height: 100vh;
@@ -2177,6 +2179,9 @@ body::after {
   .hero__content {
     min-height: 100vh;
     padding-right: 1.5625rem;
+  }
+  .hero__line--mobile {
+    display: none;
   }
   .hero__mobile-images {
     display: none;
