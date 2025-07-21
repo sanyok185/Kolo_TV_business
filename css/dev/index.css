@@ -523,8 +523,8 @@ button:focus, button:active {
   opacity: 0;
   transform: translateY(0.625rem);
   display: flex;
-  flex-basis: 33.33%;
   flex-direction: column;
+  flex-basis: 33.33%;
   align-items: center;
   color: #fff;
   text-align: center;
@@ -566,7 +566,7 @@ button:focus, button:active {
   line-height: 130%;
 }
 .item-why__title:not(:last-child) {
-  margin-bottom: 2.5rem;
+  margin-bottom: 1.25rem;
 }
 .item-why__text {
   font-size: 1.125rem;
@@ -769,6 +769,8 @@ button:focus, button:active {
 .item-who__text {
   color: rgba(255, 255, 255, 0.8);
   line-height: 155.556%;
+  display: grid;
+  gap: 0.625rem;
 }
 .block {
   /* .block__content */
@@ -934,6 +936,7 @@ button:focus, button:active {
 .work__back {
   position: absolute;
   width: 100%;
+  height: 100%;
   backface-visibility: hidden;
   display: flex;
   align-items: center;
@@ -1271,7 +1274,7 @@ button:focus, button:active {
 .plan__caption {
   color: #514f6e;
   font-weight: 500;
-  line-height: 115%; /* 1.29375rem */
+  line-height: 120%; /* 1.29375rem */
   margin-bottom: 2.25rem;
 }
 .plan__button {
@@ -1310,7 +1313,8 @@ button:focus, button:active {
 .item-equipment {
   opacity: 0;
   transform: translateY(-0.625rem);
-  display: grid;
+  display: flex;
+  flex-direction: column;
   color: #fff;
   text-align: center;
   font-weight: 500;
@@ -1334,6 +1338,7 @@ button:focus, button:active {
   line-height: 140%; /* 2.1rem */
   letter-spacing: -0.03rem;
   transition: all 0.4s;
+  margin-bottom: auto;
 }
 .item-equipment__button {
   display: flex;
@@ -1664,6 +1669,21 @@ body::after {
   }
   .item-who {
     transition: all 0.6s ease 0.3s;
+  }
+  .shop .flip-inner {
+    border: 0.0625rem solid #328cb5;
+  }
+  .self .flip-inner {
+    border: 0.0625rem solid #f6c426;
+  }
+  .food .flip-inner {
+    border: 0.0625rem solid #218e5c;
+  }
+  .hostel .flip-inner {
+    border: 0.0625rem solid #60b5dc;
+  }
+  .health .flip-inner {
+    border: 0.0625rem solid #e83a3e;
   }
   .tariffs__services {
     flex-wrap: wrap;
@@ -2248,6 +2268,11 @@ body::after {
     column-gap: clamp( 2.1875rem , 0.51731104933125rem  +  2.6939074589vw , 3.75rem );
   }
 }
+@media (min-width: 61.99875em){
+  .item-why__title {
+    min-height: 3.75rem;
+  }
+}
 @media (min-width: 62em) and (max-width: 120em){
   .item-who__back {
     padding: clamp( 1.25rem , -0.08620689655rem  +  2.1551724138vw , 2.5rem );
@@ -2507,8 +2532,8 @@ body::after {
     color: #fff;
   }
   .plan__button:hover {
-    background-color: #fff;
-    color: #0f80d2;
+    background-color: #0D1432;
+    border: 0.0625rem solid #0D1432;
   }
   .item-equipment__name:hover {
     color: #0f80d2;

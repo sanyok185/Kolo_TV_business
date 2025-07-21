@@ -5510,8 +5510,10 @@ function updateShowMoreContentValues() {
       el.dataset.flsShowmoreContent = "320";
     } else if (window.matchMedia("(max-width: 1150px)").matches) {
       el.dataset.flsShowmoreContent = "380";
+    } else if (window.matchMedia("(max-width: 1392px)").matches) {
+      el.dataset.flsShowmoreContent = "400";
     } else {
-      el.dataset.flsShowmoreContent = "420";
+      el.dataset.flsShowmoreContent = "430";
     }
   });
 }
